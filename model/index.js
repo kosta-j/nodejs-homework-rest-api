@@ -48,6 +48,9 @@ const addContact = async (body) => {
 const updateContact = async (contactId, body) => {
   const contacts = await readData()
   const index = contacts.findIndex((item) => item.id === contactId)
+  if (index === -1) {
+    return null
+  }
   contacts[index] = { ...body }
   await writeData(contacts)
   return contacts[index]
