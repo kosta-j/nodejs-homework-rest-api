@@ -1,4 +1,5 @@
 const express = require('express')
+const { NotFound, BadRequest } = require('http-errors')
 const router = express.Router()
 
 const contactsOperations = require('../../model')
@@ -8,7 +9,7 @@ const customJoi = Joi.extend(require('joi-phone-number'))
 const joiSchema = Joi.object({
   name: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
-  phone: customJoi.string().phoneNumber(),
+  phone: customJoi.string().phoneNumber().required(),
 })
 
 router.get('/', async (_, res, next) => {
@@ -29,9 +30,7 @@ router.get('/:contactId', async (req, res, next) => {
     const { contactId } = req.params
     const result = await contactsOperations.getContactById(contactId)
     if (!result) {
-      const error = new Error('Not found')
-      error.status = 404
-      throw error
+      throw new NotFound('Not found')
     }
     res.json({
       status: 'success',
@@ -48,9 +47,7 @@ router.post('/', async (req, res, next) => {
     const newContact = req.body
     const { error } = joiSchema.validate(newContact)
     if (error) {
-      const addingContactError = new Error(error.message)
-      addingContactError.status = 400
-      throw addingContactError
+      throw new BadRequest('missing fields')
     }
     const result = await contactsOperations.addContact(newContact)
     res.status(201).json({
@@ -68,9 +65,7 @@ router.delete('/:contactId', async (req, res, next) => {
     const { contactId } = req.params
     const result = await contactsOperations.removeContact(contactId)
     if (!result) {
-      const error = new Error('Not found')
-      error.status = 404
-      throw error
+      throw new NotFound('Not found')
     }
     res.status(200).json({
       status: 'success',
@@ -87,9 +82,7 @@ router.put('/:contactId', async (req, res, next) => {
     const updatedContact = req.body
     const { error } = joiSchema.validate(updatedContact)
     if (error) {
-      const updatingContactError = new Error(error.message)
-      updatingContactError.status = 400
-      throw updatingContactError
+      throw new BadRequest('missing fields')
     }
     const { contactId } = req.params
     const result = await contactsOperations.updateContact(
@@ -97,9 +90,7 @@ router.put('/:contactId', async (req, res, next) => {
       updatedContact
     )
     if (!result) {
-      const error = new Error('Not found')
-      error.status = 404
-      throw error
+      throw new NotFound('Not found')
     }
     res.status(200).json({
       status: 'success',
