@@ -52,7 +52,7 @@ const updateContact = async (contactId, body) => {
   if (index === -1) {
     return null
   }
-  contacts[index] = { ...body }
+  contacts[index] = { id: contactId, ...body }
   await writeData(contacts)
   return contacts[index]
 }

@@ -67,8 +67,33 @@ router.delete('/:contactId', async (req, res, next) => {
   res.json({ message: 'template message' })
 })
 
-router.patch('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+router.put('/:contactId', async (req, res, next) => {
+  try {
+    const updatedContact = req.body
+    const { error } = joiSchema.validate(updatedContact)
+    if (error) {
+      const updatingContactError = new Error(error.message)
+      updatingContactError.status = 400
+      throw updatingContactError
+    }
+    const { contactId } = req.params
+    const result = await contactsOperations.updateContact(
+      contactId,
+      updatedContact
+    )
+    if (!result) {
+      const error = new Error('Not found')
+      error.status = 404
+      throw error
+    }
+    res.status(201).json({
+      status: 'success',
+      code: 200,
+      data: { result },
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = router
