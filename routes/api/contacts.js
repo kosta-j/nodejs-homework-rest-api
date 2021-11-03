@@ -1,5 +1,5 @@
 const express = require('express')
-const { NotFound, BadRequest } = require('http-errors')
+const { NotFound } = require('http-errors')
 const router = express.Router()
 
 const contactsOperations = require('../../model')
@@ -11,7 +11,6 @@ router.get('/', async (_, res, next) => {
     const result = await contactsOperations.listContacts()
     res.json({
       status: 'success',
-      code: 200,
       data: { result },
     })
   } catch (error) {
@@ -28,7 +27,6 @@ router.get('/:contactId', async (req, res, next) => {
     }
     res.json({
       status: 'success',
-      code: 200,
       data: { result },
     })
   } catch (error) {
@@ -42,7 +40,6 @@ router.post('/', validation(contactsJoiSchema), async (req, res, next) => {
     const result = await contactsOperations.addContact(newContact)
     res.status(201).json({
       status: 'success',
-      code: 201,
       data: { result },
     })
   } catch (error) {
@@ -59,7 +56,6 @@ router.delete('/:contactId', async (req, res, next) => {
     }
     res.status(200).json({
       status: 'success',
-      code: 200,
       message: 'contact deleted',
     })
   } catch (error) {
@@ -83,7 +79,6 @@ router.put(
       }
       res.status(200).json({
         status: 'success',
-        code: 200,
         data: { result },
       })
     } catch (error) {
