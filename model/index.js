@@ -26,12 +26,11 @@ const getContactById = async (contactId) => {
 
 const removeContact = async (contactId) => {
   const contacts = await readData()
-  const [contactToDelete] = contacts.filter((item) => item.id === contactId)
-  const contactToDeleteIdx = contacts.indexOf(contactToDelete)
-  contacts.splice(contactToDeleteIdx, 1)
+  const contactToDeleteIdx = contacts.findIndex((item) => item.id === contactId)
+  const removed = contacts.splice(contactToDeleteIdx, 1)
   await writeData(contacts)
 
-  return contactToDelete
+  return removed
 }
 
 const addContact = async (body) => {
