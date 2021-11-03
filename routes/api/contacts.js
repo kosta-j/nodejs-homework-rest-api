@@ -7,7 +7,7 @@ const contactsOperations = require('../../model')
 const Joi = require('joi')
 const customJoi = Joi.extend(require('joi-phone-number'))
 const joiSchema = Joi.object({
-  name: Joi.string().min(3).required(),
+  name: Joi.string().required(),
   email: Joi.string().email().required(),
   phone: customJoi.string().phoneNumber().required(),
 })
