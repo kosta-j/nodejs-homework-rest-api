@@ -3,14 +3,8 @@ const { NotFound, BadRequest } = require('http-errors')
 const router = express.Router()
 
 const contactsOperations = require('../../model')
-
-const Joi = require('joi')
-const customJoi = Joi.extend(require('joi-phone-number'))
-const joiSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  phone: customJoi.string().phoneNumber().required(),
-})
+const validation = require('../../middlevares')
+const contactsJoiSchema = require('../../validations')
 
 router.get('/', async (_, res, next) => {
   try {
@@ -42,13 +36,9 @@ router.get('/:contactId', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', validation(contactsJoiSchema), async (req, res, next) => {
   try {
     const newContact = req.body
-    const { error } = joiSchema.validate(newContact)
-    if (error) {
-      throw new BadRequest('missing fields')
-    }
     const result = await contactsOperations.addContact(newContact)
     res.status(201).json({
       status: 'success',
@@ -77,29 +67,29 @@ router.delete('/:contactId', async (req, res, next) => {
   }
 })
 
-router.put('/:contactId', async (req, res, next) => {
-  try {
-    const updatedContact = req.body
-    const { error } = joiSchema.validate(updatedContact)
-    if (error) {
-      throw new BadRequest('missing fields')
+router.put(
+  '/:contactId',
+  validation(contactsJoiSchema),
+  async (req, res, next) => {
+    try {
+      const updatedContact = req.body
+      const { contactId } = req.params
+      const result = await contactsOperations.updateContact(
+        contactId,
+        updatedContact
+      )
+      if (!result) {
+        throw new NotFound('Not found')
+      }
+      res.status(200).json({
+        status: 'success',
+        code: 200,
+        data: { result },
+      })
+    } catch (error) {
+      next(error)
     }
-    const { contactId } = req.params
-    const result = await contactsOperations.updateContact(
-      contactId,
-      updatedContact
-    )
-    if (!result) {
-      throw new NotFound('Not found')
-    }
-    res.status(200).json({
-      status: 'success',
-      code: 200,
-      data: { result },
-    })
-  } catch (error) {
-    next(error)
   }
-})
+)
 
 module.exports = router
