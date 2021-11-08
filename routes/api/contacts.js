@@ -2,6 +2,7 @@ const express = require('express')
 const { NotFound } = require('http-errors')
 const router = express.Router()
 
+const { Contact } = require('../../model')
 const contactsOperations = require('../../model')
 const validation = require('../../middlevares')
 const contactsJoiSchema = require('../../validations')
@@ -37,7 +38,7 @@ router.get('/:contactId', async (req, res, next) => {
 router.post('/', validation(contactsJoiSchema), async (req, res, next) => {
   try {
     const newContact = req.body
-    const result = await contactsOperations.addContact(newContact)
+    const result = await Contact.create(newContact)
     res.status(201).json({
       status: 'success',
       data: { result },
