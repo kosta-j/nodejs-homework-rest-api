@@ -1,15 +1,14 @@
 const express = require('express')
-const { NotFound } = require('http-errors')
+const { BadRequest } = require('http-errors')
 const router = express.Router()
 
 const { Contact } = require('../../model')
-const contactsOperations = require('../../model')
 const validation = require('../../middlevares')
 const contactsJoiSchema = require('../../validations')
 
 router.get('/', async (_, res, next) => {
   try {
-    const result = await contactsOperations.listContacts()
+    const result = await Contact.find()
     res.json({
       status: 'success',
       data: { result },
@@ -22,10 +21,7 @@ router.get('/', async (_, res, next) => {
 router.get('/:contactId', async (req, res, next) => {
   try {
     const { contactId } = req.params
-    const result = await contactsOperations.getContactById(contactId)
-    if (!result) {
-      throw new NotFound('Not found')
-    }
+    const result = await Contact.findById(contactId)
     res.json({
       status: 'success',
       data: { result },
@@ -51,13 +47,11 @@ router.post('/', validation(contactsJoiSchema), async (req, res, next) => {
 router.delete('/:contactId', async (req, res, next) => {
   try {
     const { contactId } = req.params
-    const result = await contactsOperations.removeContact(contactId)
-    if (!result) {
-      throw new NotFound('Not found')
-    }
+    const result = await Contact.findByIdAndRemove(contactId)
     res.status(200).json({
       status: 'success',
       message: 'contact deleted',
+      data: { result },
     })
   } catch (error) {
     next(error)
@@ -71,13 +65,11 @@ router.put(
     try {
       const updatedContact = req.body
       const { contactId } = req.params
-      const result = await contactsOperations.updateContact(
+      const result = await Contact.findByIdAndUpdate(
         contactId,
-        updatedContact
+        updatedContact,
+        { new: true }
       )
-      if (!result) {
-        throw new NotFound('Not found')
-      }
       res.status(200).json({
         status: 'success',
         data: { result },
@@ -87,5 +79,28 @@ router.put(
     }
   }
 )
+
+router.patch('/:contactId/favorite', async (req, res, next) => {
+  try {
+    const { favorite } = req.body
+    if (!favorite) {
+      return res.status(400).json({ message: 'missing field favorite' })
+    }
+    const { contactId } = req.params
+    const result = await Contact.findByIdAndUpdate(
+      contactId,
+      { favorite },
+      {
+        new: true,
+      }
+    )
+    res.status(200).json({
+      status: 'success',
+      data: { result },
+    })
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = router
