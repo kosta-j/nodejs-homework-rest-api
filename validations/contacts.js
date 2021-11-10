@@ -1,4 +1,3 @@
-const { boolean } = require('joi')
 const Joi = require('joi')
 const customJoi = Joi.extend(require('joi-phone-number'))
 
