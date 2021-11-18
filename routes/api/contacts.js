@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const { Contact } = require('../../model')
 const validation = require('../../middlevares')
-const contactsJoiSchema = require('../../validations')
+const { contactsJoiSchema } = require('../../validations')
 const {
   addContact,
   getAll,

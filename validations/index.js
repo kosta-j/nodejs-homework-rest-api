@@ -1,3 +1,4 @@
 const contactsJoiSchema = require('./contacts')
+const usersJoiSchema = require('./users')
 
-module.exports = contactsJoiSchema
+module.exports = { contactsJoiSchema, usersJoiSchema }
