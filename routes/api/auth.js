@@ -1,7 +1,7 @@
 const express = require('express')
 
 const router = express.Router()
-const validation = require('../../middlevares')
+const { validation } = require('../../middlevares')
 const { usersJoiSchema } = require('../../validations')
 const { signUp, login } = require('../../controllers/auth')
 

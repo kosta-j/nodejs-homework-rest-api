@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const validation = require('../../middlevares')
+const { validation, authenticate } = require('../../middlevares')
 const { contactsJoiSchema } = require('../../validations')
 const {
   addContact,
@@ -16,7 +16,7 @@ router.get('/', getAll)
 
 router.get('/:contactId', getById)
 
-router.post('/', validation(contactsJoiSchema), addContact)
+router.post('/', authenticate, validation(contactsJoiSchema), addContact)
 
 router.delete('/:contactId', deleteContact)
 
