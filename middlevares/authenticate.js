@@ -11,8 +11,13 @@ const authenticate = async (req, res, next) => {
       })
     }
     const { id } = jwt.verify(token, SECRET_KEY)
-    const user = await User.findById(id, '_id email')
+    const user = await User.findById(id)
     if (!user) {
+      return res.status(401).json({
+        message: 'Not authorized',
+      })
+    }
+    if (!user.token) {
       return res.status(401).json({
         message: 'Not authorized',
       })
