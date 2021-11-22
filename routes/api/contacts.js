@@ -12,16 +12,21 @@ const {
   updateStatusContact,
 } = require('../../controllers/contacts')
 
-router.get('/', getAll)
+router.get('/', authenticate, getAll)
 
-router.get('/:contactId', getById)
+router.get('/:contactId', authenticate, getById)
 
 router.post('/', authenticate, validation(contactsJoiSchema), addContact)
 
-router.delete('/:contactId', deleteContact)
+router.delete('/:contactId', authenticate, deleteContact)
 
-router.put('/:contactId', validation(contactsJoiSchema), updateContact)
+router.put(
+  '/:contactId',
+  authenticate,
+  validation(contactsJoiSchema),
+  updateContact
+)
 
-router.patch('/:contactId/favorite', updateStatusContact)
+router.patch('/:contactId/favorite', authenticate, updateStatusContact)
 
 module.exports = router
