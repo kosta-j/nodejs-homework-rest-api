@@ -15,10 +15,6 @@ const contactSchema = Schema({
     type: Boolean,
     default: false,
   },
-  avatarURL: {
-    type: String,
-    default: '',
-  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'user',
