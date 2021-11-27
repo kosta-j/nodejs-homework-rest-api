@@ -6,6 +6,7 @@ const contactsJoiSchema = Joi.object({
   email: Joi.string().email().required(),
   phone: customJoi.string().phoneNumber().required(),
   favorite: Joi.boolean(),
+  avatarURL: Joi.string(),
 })
 
 module.exports = contactsJoiSchema
