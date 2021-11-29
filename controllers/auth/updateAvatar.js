@@ -4,9 +4,27 @@ const path = require('path')
 const { User } = require('../../model')
 
 const updateAvatar = async (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      message: 'Not authorized',
+    })
+  }
+  if (!req.file) {
+    return res.status(404).json({
+      message: 'Not found',
+    })
+  }
+
   const { _id } = req.user
-  const { path: tempPath, originalname } = req.file
+  const { path: tempPath, originalname, mimetype } = req.file
+
   try {
+    if (!mimetype.includes('image')) {
+      await fs.unlink(tempPath)
+      return res.status(415).json({
+        message: 'Invalid file type',
+      })
+    }
     // replacing original image name with _id:
     const newName = originalname.replace(
       originalname.substr(0, originalname.lastIndexOf('.')),
