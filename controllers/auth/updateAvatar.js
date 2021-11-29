@@ -24,7 +24,7 @@ const updateAvatar = async (req, res, next) => {
     // move image:
     await fs.rename(tempPath, avatarsPath)
     // update avatarURL in DB:
-    const relatedPath = `/public/avatars/${newName}`
+    const relatedPath = `/avatars/${newName}`
     await User.findByIdAndUpdate(_id, { avatarURL: relatedPath })
 
     res.status(200).json({
