@@ -19,12 +19,6 @@ const updateAvatar = async (req, res, next) => {
   const { path: tempPath, originalname, mimetype } = req.file
 
   try {
-    if (!mimetype.includes('image')) {
-      await fs.unlink(tempPath)
-      return res.status(415).json({
-        message: 'Invalid file type',
-      })
-    }
     // replacing original image name with _id:
     const newName = originalname.replace(
       originalname.substr(0, originalname.lastIndexOf('.')),

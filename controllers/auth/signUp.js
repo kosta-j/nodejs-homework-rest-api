@@ -9,7 +9,7 @@ const signUp = async (req, res, next) => {
     if (user) {
       return res.status(409).json({ message: 'Email in use' })
     }
-    const avatarURL = gravatar.url(email, { d: 'identicon' })
+    const avatarURL = gravatar.url(email, { d: 'identicon' }, false)
     const newUser = new User({ email, avatarURL })
     newUser.setPassword(password)
     await newUser.save()
