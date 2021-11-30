@@ -16,7 +16,7 @@ const updateAvatar = async (req, res, next) => {
   }
 
   const { _id } = req.user
-  const { path: tempPath, originalname, mimetype } = req.file
+  const { path: tempPath, originalname } = req.file
 
   try {
     // replacing original image name with _id:
