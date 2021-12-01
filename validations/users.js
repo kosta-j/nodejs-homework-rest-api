@@ -4,6 +4,7 @@ const usersJoiSchema = Joi.object({
   password: Joi.string().required(),
   email: Joi.string().email().required(),
   subscription: Joi.string(),
+  avatarURL: Joi.string(),
   token: Joi.string(),
 })
 
