@@ -20,7 +20,10 @@ const email = {
   text: '<p>Test email message from nodejs mailer</p>',
 }
 
-transporter
-  .sendMail(email)
-  .then(() => console.log('success-email sent'))
-  .catch((error) => console.log(error.message))
+const sendMail = async (data) => {
+  const email = { ...data, from: 'kostetych.test@gmail.com' }
+  await transporter.sendMail(email)
+  return true
+}
+
+module.exports = sendMail
